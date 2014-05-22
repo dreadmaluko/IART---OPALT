@@ -1,0 +1,3 @@
+| Lote1 || Lote2 Lote3 ||
+| Lote2 || Lote3 ||
+| Lote3 || Lote1 ||
