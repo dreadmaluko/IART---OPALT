@@ -1,0 +1,31 @@
+package GeographicArea.Utilities;
+
+public class UtilitieType {
+	
+	private String name;
+	private int index;
+	private static int numberOfUtilities = 0;
+	
+	public UtilitieType(String _name){
+		name = _name;
+		index = numberOfUtilities;
+		
+		numberOfUtilities++;
+	}
+	
+	public void printInfo(){
+		System.out.println("\tUrilitie type: " + name);
+	}
+	
+	public int getIndex(){
+		return index;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public static int getNumberOfUtilities(){
+		return numberOfUtilities;
+	}
+}
