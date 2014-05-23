@@ -1,5 +1,6 @@
 package GeographicArea;
 
+import GeographicArea.Utilities.UtilitieType;
 import GrafoStruct.Node;
 
 public class Lote extends Node{
@@ -8,8 +9,9 @@ public class Lote extends Node{
 	private GroundInclination groundInclination;
 	private int price;
 	private int dimensions;
+	private UtilitieType utilitieType;
 
-	public Lote(String _name, String _groundClass, String _groundInclin, int _price, int _dimensions){
+	public Lote(String _name, String _groundClass, String _groundInclin, int _price, int _dimensions, UtilitieType _utlitie){
 		
 		super(_name);
 		
@@ -18,6 +20,7 @@ public class Lote extends Node{
 		
 		price = _price;
 		dimensions = _dimensions;
+		utilitieType = _utlitie;
 	}
 	
 	private void setGroundType(String groundClassification){
@@ -33,6 +36,7 @@ public class Lote extends Node{
 		
 		groundType.printInfo();
 		groundInclination.printInfo();
+		utilitieType.printInfo();
 		
 		System.out.println("\tPrice: " + price + "€");
 		System.out.println("\tDimensions: " + dimensions + "m²");

@@ -1,18 +1,77 @@
 package GeographicArea;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Vector;
+
+import GeographicArea.Utilities.UtilitieType;
 import GrafoStruct.Grafo;
 import GrafoStruct.Node;
 
 enum CurrentLoadOperation{
 	LOAD_LOTES,
-	LOAD_CONNECTIONS
+	LOAD_CONNECTIONS,
+	LOAD_UTILITIES,
+	LOAD_RESTRICTIONS
 }
 
 public class GeographicArea extends Grafo{
 	
+	private Vector<UtilitieType> utilities = new  Vector<UtilitieType>();
+	
+	
+	public GeographicArea() throws IOException{
+		
+		loadFiles();
+	}
+	
+	private void loadFiles() throws IOException{
+		
+		loadUtilities();
+		loadLotes();
+	}
+	
+	private void loadUtilities() throws IOException{
+		CurrentLoadOperation loadOperation = null;
+		//String[] _temp_str_arr;
+		
+		BufferedReader fd = new BufferedReader(new FileReader("utilities.txt"));
+		
+	    try {
+	        String line = fd.readLine();
+
+	        while (line != null) {    
+	        	
+	        	//_temp_str_arr = line.split("//");
+	        	
+	        	if(line.split("//").length > 1 && line.split("//")[1].equals("Utilities"))
+	        		loadOperation = CurrentLoadOperation.LOAD_UTILITIES;
+	        	else if(line.split("//").length > 1 &&  line.split("//")[1].equals("Restrictions"))
+	        		loadOperation = CurrentLoadOperation.LOAD_RESTRICTIONS;
+	        	else{
+	        		
+	        		if(loadOperation != null)
+	        			if(loadOperation == CurrentLoadOperation.LOAD_UTILITIES){
+	        				addUtilitie(line);
+	        			}
+	        			else
+	        				if(loadOperation == CurrentLoadOperation.LOAD_RESTRICTIONS){
+	        				}
+	        	}
+	        		
+	            line = fd.readLine();
+	        }
+	        
+	    } finally {
+	        fd.close();
+	    }
+	}
+	
+	public void addUtilitie(String utilitieName){
+		utilities.add(new UtilitieType(utilitieName));
+	}
 	
 	public void addLote(Lote lote){
 		
@@ -21,6 +80,14 @@ public class GeographicArea extends Grafo{
 				return;
 		
 		this.vertexSet.add(lote);
+	}
+	
+	private UtilitieType getUtilitie(String utilitieType){
+		
+		for(int i = 0; i < utilities.size(); i++)
+			if(utilities.get(i).getName().equals(utilitieType))
+				return utilities.get(i);
+		return null;
 	}
 	
 	private Lote getLote(String loteName){
@@ -50,9 +117,11 @@ public class GeographicArea extends Grafo{
 		
 		for(Node lote : this.vertexSet)
 			lote.printInfo();
+		
+		System.out.println("Numero de utilidades: " + UtilitieType.getNumberOfUtilities());
 	}
 	
-	public void loadFile() throws IOException{
+	private void loadLotes() throws IOException{
 		
 		CurrentLoadOperation loadOperation = null;
 		String[] _temp_str_arr;
@@ -75,7 +144,7 @@ public class GeographicArea extends Grafo{
 	        		if(loadOperation != null)
 	        			if(loadOperation == CurrentLoadOperation.LOAD_LOTES){
 	        				_temp_str_arr = line.split("-");
-	        				addLote(new Lote(_temp_str_arr[0],_temp_str_arr[1],_temp_str_arr[2],Integer.parseInt(_temp_str_arr[3]),Integer.parseInt(_temp_str_arr[4])));
+	        				addLote(new Lote(_temp_str_arr[0],_temp_str_arr[1],_temp_str_arr[2],Integer.parseInt(_temp_str_arr[3]),Integer.parseInt(_temp_str_arr[4]),getUtilitie(_temp_str_arr[5])));
 	        			}
 	        			else
 	        				if(loadOperation == CurrentLoadOperation.LOAD_CONNECTIONS){
@@ -94,15 +163,9 @@ public class GeographicArea extends Grafo{
 	}
 	
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException{
 		
 		GeographicArea ga = new GeographicArea();		
-		
-		try {
-			ga.loadFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
 		ga.printInfo();
 	}
