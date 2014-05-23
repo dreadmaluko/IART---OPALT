@@ -1,0 +1,6 @@
+package GeographicArea.Utilities;
+
+public enum UtilitieType {
+
+	HABITATION("Habitation");
+}

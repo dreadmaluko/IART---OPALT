@@ -1,0 +1,79 @@
+pdt: ----------------------------------
+pdt: Thu May 22 18:19:56 BST 2014
+pdt: ----------------------------------
+pdt: set debug output to LOGFILE
+pdt: ----------------------------------
+pdt: Thu May 22 18:19:56 BST 2014
+pdt: ----------------------------------
+pdt: set debug output to LOGFILE
+pdt: WARNING - 23/05 17:06:46 - Worker-44: pdt: The following Exception was caught:
+org.cs3.prolog.pif.PrologInterfaceException: Failed to obtain session
+	at org.cs3.prolog.internal.pif.AbstractPrologInterface.getSession(AbstractPrologInterface.java:398)
+	at org.cs3.prolog.internal.pif.socket.SocketPrologInterface.queryAll(SocketPrologInterface.java:394)
+	at org.cs3.pdt.navigator.internal.decorators.PDTConsultDecoratorContributor.fillSetsIfNeeded(PDTConsultDecoratorContributor.java:177)
+	at org.cs3.pdt.navigator.internal.decorators.PDTConsultDecoratorContributor.isContainingFolder(PDTConsultDecoratorContributor.java:164)
+	at org.cs3.pdt.navigator.internal.decorators.PDTConsultDecoratorContributor.decorate(PDTConsultDecoratorContributor.java:103)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorDefinition.decorate(LightweightDecoratorDefinition.java:263)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager$LightweightRunnable.run(LightweightDecoratorManager.java:81)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager.decorate(LightweightDecoratorManager.java:365)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager.getDecorations(LightweightDecoratorManager.java:347)
+	at org.eclipse.ui.internal.decorators.DecorationScheduler$1.ensureResultCached(DecorationScheduler.java:371)
+	at org.eclipse.ui.internal.decorators.DecorationScheduler$1.run(DecorationScheduler.java:331)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+Caused by: org.cs3.prolog.pif.PrologInterfaceException: java.net.SocketException: Connection reset
+	at org.cs3.prolog.internal.lifecycle.AbstractState.error(AbstractState.java:117)
+	at org.cs3.prolog.internal.lifecycle.LifeCycle$3.run(LifeCycle.java:226)
+	at org.cs3.prolog.internal.lifecycle.LifeCycle$DispatcherThread.run(LifeCycle.java:59)
+Caused by: java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:196)
+	at java.net.SocketInputStream.read(SocketInputStream.java:122)
+	at org.cs3.prolog.internal.pif.socket.InputStreamProxy.read(InputStreamProxy.java:81)
+	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:283)
+	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:325)
+	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:177)
+	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+	at java.io.BufferedReader.fill(BufferedReader.java:154)
+	at java.io.BufferedReader.readLine(BufferedReader.java:317)
+	at java.io.BufferedReader.readLine(BufferedReader.java:382)
+	at org.cs3.prolog.internal.pif.socket.SocketClient.readUntil(SocketClient.java:165)
+	at org.cs3.prolog.internal.pif.socket.SocketClient.readUntil(SocketClient.java:133)
+	at org.cs3.prolog.internal.pif.socket.SocketClient.reset(SocketClient.java:105)
+	at org.cs3.prolog.internal.pif.socket.SocketClient.<init>(SocketClient.java:60)
+	at org.cs3.prolog.internal.pif.socket.SocketPrologInterface.getSession_impl(SocketPrologInterface.java:157)
+	at org.cs3.prolog.internal.pif.AbstractPrologInterface.getSession_internal(AbstractPrologInterface.java:406)
+	at org.cs3.prolog.internal.pif.AbstractPrologInterface.getSession(AbstractPrologInterface.java:396)
+	at org.cs3.prolog.internal.pif.socket.SocketPrologInterface.queryAll(SocketPrologInterface.java:394)
+	at org.cs3.pdt.navigator.internal.decorators.PDTConsultDecoratorContributor.fillSetsIfNeeded(PDTConsultDecoratorContributor.java:177)
+	at org.cs3.pdt.navigator.internal.decorators.PDTConsultDecoratorContributor.isContainingFolder(PDTConsultDecoratorContributor.java:164)
+	at org.cs3.pdt.navigator.internal.decorators.PDTConsultDecoratorContributor.decorate(PDTConsultDecoratorContributor.java:103)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorDefinition.decorate(LightweightDecoratorDefinition.java:263)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager$LightweightRunnable.run(LightweightDecoratorManager.java:81)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager.decorate(LightweightDecoratorManager.java:365)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager.getDecorations(LightweightDecoratorManager.java:347)
+	at org.eclipse.ui.internal.decorators.DecorationScheduler$1.ensureResultCached(DecorationScheduler.java:371)
+	at org.eclipse.ui.internal.decorators.DecorationScheduler$1.run(DecorationScheduler.java:331)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+pdt: WARNING - 23/05 17:06:47 - PIF Default Process Work: There was a problem during server shutdown.
+pdt: WARNING - 23/05 17:06:47 - PIF Default Process Work: pdt: The following Exception was caught:
+java.net.ConnectException: Connection refused: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at java.net.Socket.connect(Socket.java:528)
+	at java.net.Socket.<init>(Socket.java:425)
+	at java.net.Socket.<init>(Socket.java:208)
+	at org.cs3.prolog.internal.pif.socket.ReusableSocket.<init>(ReusableSocket.java:33)
+	at org.cs3.prolog.internal.pif.socket.SocketClient.<init>(SocketClient.java:53)
+	at org.cs3.prolog.internal.pif.socket.SocketServerStartAndStopStrategy.getSocketClient(SocketServerStartAndStopStrategy.java:377)
+	at org.cs3.prolog.internal.pif.socket.SocketServerStartAndStopStrategy.stopSocketServer(SocketServerStartAndStopStrategy.java:357)
+	at org.cs3.prolog.internal.pif.socket.SocketServerStartAndStopStrategy.stopServer(SocketServerStartAndStopStrategy.java:348)
+	at org.cs3.prolog.internal.pif.AbstractPrologInterface$MyLifeCycle.stopServer(AbstractPrologInterface.java:251)
+	at org.cs3.prolog.internal.lifecycle.ErrorState$1.run(ErrorState.java:48)
+	at org.cs3.prolog.internal.lifecycle.LifeCycle$DispatcherThread.run(LifeCycle.java:59)

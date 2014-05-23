@@ -1,0 +1,35 @@
+package GeographicArea.Utilities;
+
+import GeographicArea.GroundType;
+
+public enum UtilitieType {
+
+	HABITATION("Habitation"),
+	DUMP("Dump"),
+	SCHOOL("School"),
+	OFFICE("Office"),
+	ROAD("Road"),
+	HIGHWAY("Highway"),
+	PARK("Park"),
+	RIVER("River");
+	
+	private String name;
+	
+	private UtilitieType(String _name){
+		name = _name;
+	}
+	
+	public static getUtilitieType(String _name){
+
+		if(_name.equals("Habitation"))
+			return UtilitieType.HABITATION;
+		else
+			if(_name.equals("Dump"))
+				return UtilitieType.DUMP;
+			else
+				if(_name.equals("School"))
+					return UtilitieType.SCHOOL;
+		
+		return null;
+	}
+}
