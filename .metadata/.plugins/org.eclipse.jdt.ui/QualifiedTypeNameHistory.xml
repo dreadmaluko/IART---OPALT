@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="GeographicArea.Utilities.UtilitieType"/>
+<fullyQualifiedTypeName name="java.util.Vector"/>
+<fullyQualifiedTypeName name="GeographicArea.GeographicArea"/>
+<fullyQualifiedTypeName name="Algorithm.Genetic.Chromosome"/>
+</qualifiedTypeNameHistroy>

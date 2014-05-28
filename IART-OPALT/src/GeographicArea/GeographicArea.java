@@ -1,11 +1,11 @@
 package GeographicArea;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
+import Algorithm.Genetic.Chromosome;
 import GeographicArea.Utilities.UtilitieType;
 import GrafoStruct.Grafo;
 import GrafoStruct.Node;
@@ -25,6 +25,10 @@ public class GeographicArea extends Grafo{
 	public GeographicArea() throws IOException{
 		
 		loadFiles();
+		
+		Chromosome.setChromosomeSize(vertexSet.size()*utilities.size());
+		Chromosome.setChromosomeSector(utilities.size());
+		Chromosome.setChromosomeUtilities(utilities);
 	}
 	
 	private void loadFiles() throws IOException{
