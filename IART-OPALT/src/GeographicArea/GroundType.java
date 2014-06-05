@@ -1,14 +1,20 @@
 package GeographicArea;
 
-enum GroundType{
-	POOR("Poor"),
-	REASONABLE("Reasonable"),
-	RICH("Rich");
+import java.util.Random;
+
+public enum GroundType{
+	POOR("Poor",1),
+	REASONABLE("Reasonable",2),
+	RICH("Rich",3);
 	
 	private String name;
+	private int value;
 	
-	private GroundType(String str){
+	private static final Random rand = new Random(System.currentTimeMillis());
+	
+	private GroundType(String str, int v){
 		name = str;
+		value = v;
 	}
 	
 	public static GroundType getType(String str){
@@ -27,5 +33,32 @@ enum GroundType{
 	
 	public void printInfo(){
 		System.out.println("\tGround type: " + name);
+	}
+	
+	public int getValue(){
+		return value;
+	}
+	
+	public static GroundType getRandomGroundType(){
+		
+		GroundType[] _temp = {POOR,REASONABLE,RICH};
+		
+		return _temp[rand.nextInt(_temp.length)];
+	}
+	
+	public static GroundType getRandomGroundType(GroundType gt){
+		
+		GroundType[] _temp = {POOR,REASONABLE,RICH};
+		
+		int _temp_int = 1000;
+		
+		while(!(gt.getValue()-1 <= _temp_int && _temp_int <= gt.getValue()+1 && _temp_int > 0))
+			_temp_int = rand.nextInt(_temp.length);
+		
+		return _temp[_temp_int];
+	}
+
+	public String getName() {
+		return name;
 	}
 }

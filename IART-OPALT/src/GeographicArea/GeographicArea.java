@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Vector;
 
 import Algorithm.Genetic.Chromosome;
+import GeographicArea.Utilities.Restriction;
+import GeographicArea.Utilities.RestrictionType;
 import GeographicArea.Utilities.UtilitieType;
 import GrafoStruct.Grafo;
 import GrafoStruct.Node;
@@ -20,6 +22,7 @@ enum CurrentLoadOperation{
 public class GeographicArea extends Grafo{
 	
 	private Vector<UtilitieType> utilities = new  Vector<UtilitieType>();
+	private Vector<Restriction> restrictions = new  Vector<Restriction>();
 	
 	
 	public GeographicArea() throws IOException{
@@ -29,12 +32,74 @@ public class GeographicArea extends Grafo{
 		Chromosome.setChromosomeSize(vertexSet.size()*utilities.size());
 		Chromosome.setChromosomeSector(utilities.size());
 		Chromosome.setChromosomeUtilities(utilities);
+		Chromosome.setChromosomeLotes(vertexSet);
+		Chromosome.setChromosomeRestrictions(restrictions);
 	}
 	
 	private void loadFiles() throws IOException{
 		
 		loadUtilities();
 		loadLotes();
+	}
+	
+	/*private void generateGround(String loteName, Lote currentLote){
+		
+		if(getLote(loteName) != null)
+			if(currentLote == null){
+				getLote(loteName).setGroundType(GroundType.getRandomGroundType());
+				getLote(loteName).setGroundInclination(GroundInclination.getRandomGroundInclination());
+			}
+			else{
+				if(currentLote.getGroundType() != null && getLote(loteName).getGroundType() == null)
+					getLote(loteName).setGroundType(GroundType.getRandomGroundType(currentLote.getGroundType()));
+				if(currentLote.getGroundInclination() != null && getLote(loteName).getGroundInclination() == null)
+					getLote(loteName).setGroundInclination(GroundInclination.getRandomGroundInclination(currentLote.getGroundInclination()));
+			}		
+	}*/
+	
+	public void generateGeographicArea(int width, int height){
+		
+		vertexSet = new Vector<Node>();
+		Lote _temp_lote;
+		
+		for(int i = 0; i < width*height; i++){
+			addLote(new Lote("Lote"+i,GroundType.getRandomGroundType(),GroundInclination.getRandomGroundInclination(),100,10,null));
+		}
+		
+		for(int i = 0; i < width*height; i++){
+			
+			_temp_lote = getLote("Lote"+i);
+			
+			if(i > width){ //tem vizinhos em cima
+				_temp_lote.addEdge(new Distance(getLote("Lote"+(i-width)),10));
+					
+			}
+			if(i < width*(height-1)){ //tem vizinhos em baixo
+				_temp_lote.addEdge(new Distance(getLote("Lote"+(i+width)),10));
+			}
+			if(i != 0 && i != width*height-1){
+				if(!(i%width == 0) && !(i%width == 4)){ //tem vizinhos à esquerda //tem vizinhos à direita
+					_temp_lote.addEdge(new Distance(getLote("Lote"+(i-1)),10));
+					_temp_lote.addEdge(new Distance(getLote("Lote"+(i+1)),10));
+				}
+				else
+					if(i%width == 0)
+						_temp_lote.addEdge(new Distance(getLote("Lote"+(i+1)),10));
+					else
+						if(i%width == width-1)
+							_temp_lote.addEdge(new Distance(getLote("Lote"+(i-1)),10));
+			}
+			else
+				if(i == 0){
+					_temp_lote.addEdge(new Distance(getLote("Lote"+(i+1)),10));
+				}
+				else
+					if(i == width*height-1)
+						_temp_lote.addEdge(new Distance(getLote("Lote"+(i-1)),10));
+					
+			
+				
+		}
 	}
 	
 	private void loadUtilities() throws IOException{
@@ -48,8 +113,6 @@ public class GeographicArea extends Grafo{
 
 	        while (line != null) {    
 	        	
-	        	//_temp_str_arr = line.split("//");
-	        	
 	        	if(line.split("//").length > 1 && line.split("//")[1].equals("Utilities"))
 	        		loadOperation = CurrentLoadOperation.LOAD_UTILITIES;
 	        	else if(line.split("//").length > 1 &&  line.split("//")[1].equals("Restrictions"))
@@ -58,10 +121,24 @@ public class GeographicArea extends Grafo{
 	        		
 	        		if(loadOperation != null)
 	        			if(loadOperation == CurrentLoadOperation.LOAD_UTILITIES){
-	        				addUtilitie(line);
+	        				
+	        				String[] x = line.split("-");
+	        				addUtilitie(x[0],Integer.parseInt(x[1]),Integer.parseInt(x[2]), Integer.parseInt(x[3]));
 	        			}
 	        			else
 	        				if(loadOperation == CurrentLoadOperation.LOAD_RESTRICTIONS){
+	        					
+	        					if(line.split("-//-").length == 2){
+	        						
+	        						String[] x = line.split("-//-");
+	        						addRestriction(x[0],x[1], RestrictionType.ADJACENT);
+	        					}
+	        					else
+	        						if(line.split("-|-").length == 2){
+		        						
+		        						String[] x = line.split("-!-");
+		        						addRestriction(x[0],x[1], RestrictionType.NOT_ADJACENT);
+		        					}
 	        				}
 	        	}
 	        		
@@ -73,8 +150,12 @@ public class GeographicArea extends Grafo{
 	    }
 	}
 	
-	public void addUtilitie(String utilitieName){
-		utilities.add(new UtilitieType(utilitieName));
+	public void addUtilitie(String utilitieName, int groundQuality, int groundInclination, int loteCost){
+		utilities.add(new UtilitieType(utilitieName, groundQuality, groundInclination, loteCost));
+	}
+	
+	public void addRestriction(String utilitieName1, String utilitieName2, RestrictionType type){
+		restrictions.add(new Restriction(getUtilitie(utilitieName1),getUtilitie(utilitieName2),type));
 	}
 	
 	public void addLote(Lote lote){
@@ -123,6 +204,18 @@ public class GeographicArea extends Grafo{
 			lote.printInfo();
 		
 		System.out.println("Numero de utilidades: " + UtilitieType.getNumberOfUtilities());
+		
+		for(int i = 0; i < vertexSet.size(); i++){
+			
+			if(((Lote)vertexSet.get(i)).getGroundType() != null)
+				System.out.print(((Lote)vertexSet.get(i)).getGroundType().getName() + " ");
+			else
+				System.out.print("     " + " ");
+			
+			if(i%Math.sqrt((double)vertexSet.size()) == Math.sqrt((double)vertexSet.size())-1)
+				System.out.println();				
+		}
+				
 	}
 	
 	private void loadLotes() throws IOException{
@@ -169,9 +262,25 @@ public class GeographicArea extends Grafo{
 	
 	public static void main(String[] args) throws IOException{
 		
-		GeographicArea ga = new GeographicArea();		
+		GeographicArea ga = new GeographicArea();	
+		
+		//ga.generateGeographicArea(3, 3);
 		
 		ga.printInfo();
+	}
+
+	public void setNewUtilitiesDistribution(char[] charArray) {
+		
+		for(int i = 0; i < charArray.length; i += utilities.size()){
+			
+			for(int j = 0; j < utilities.size(); j++){
+				if(((int)charArray[i+j])-48 == 1){
+					((Lote)vertexSet.get(i/utilities.size())).setUtilitie(utilities.get(j));					
+					break;
+				}
+			}
+		}
+		
 	}
 
 }

@@ -23,6 +23,36 @@ public class Lote extends Node{
 		utilitieType = _utlitie;
 	}
 	
+	public Lote(String _name, GroundType _groundClass, GroundInclination _groundInclin, int _price, int _dimensions, UtilitieType _utlitie){
+		
+		super(_name);
+		
+		groundType = _groundClass;
+		groundInclination = _groundInclin;
+		price = _price;
+		dimensions = _dimensions;
+		utilitieType = _utlitie;
+	}
+	
+	public GroundType getGroundType(){
+		return groundType;
+	}
+	public GroundInclination getGroundInclination(){
+		return groundInclination;
+	}
+	
+	public void setUtilitie(UtilitieType u){
+		utilitieType = u;
+	}
+	
+	public void setGroundType(GroundType _groundClass){
+		groundType = _groundClass;
+	}
+	
+	public void setGroundInclination(GroundInclination _groundInclin){
+		groundInclination = _groundInclin;
+	}
+	
 	private void setGroundType(String groundClassification){
 		groundType = GroundType.getType(groundClassification);
 	}
@@ -34,14 +64,24 @@ public class Lote extends Node{
 	public void printInfo(){
 		super.printInfo();
 		
-		groundType.printInfo();
-		groundInclination.printInfo();
-		utilitieType.printInfo();
+		
+		if(groundType != null)
+			groundType.printInfo();
+		
+		if(groundInclination != null)
+			groundInclination.printInfo();
+		
+		if(utilitieType != null)
+			utilitieType.printInfo();
 		
 		System.out.println("\tPrice: " + price + "€");
 		System.out.println("\tDimensions: " + dimensions + "m²");
 		
 		System.out.println();
+	}
+
+	public int getCost() {
+		return price;
 	}
 }
 

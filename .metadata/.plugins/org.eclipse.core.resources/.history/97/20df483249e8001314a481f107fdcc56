@@ -1,0 +1,5 @@
+package GeographicArea.Utilities;
+
+public enum RestrictionType {
+
+}

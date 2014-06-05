@@ -1,0 +1,14 @@
+//Lotes
+Lote1-Poor-Flat-4000-432-Road
+Lote2-Rich-Flat-3500-320-Road
+Lote3-Poor-Flat-2500-512-Road
+Lote4-Rich-Slope-3000-100-Road
+Lote5-Poor-Flat-4000-432-Road
+Lote6-Rich-Flat-3500-320-Road
+Lote7-Rich-Flat-2500-512-Road
+Lote8-Rich-Slope-3000-100-Road
+//Connections
+Lote1-Lote2-10
+Lote1-Lote3-20
+Lote2-Lote3-15
+Lote3-Lote4-4

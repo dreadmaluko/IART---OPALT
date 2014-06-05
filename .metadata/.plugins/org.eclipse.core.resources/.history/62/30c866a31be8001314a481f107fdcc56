@@ -1,0 +1,47 @@
+package GeographicArea.Utilities;
+
+public class UtilitieType {
+	
+	private String name;
+	private int index;
+	private static int numberOfUtilities = 0;
+	
+	private int groundQuality;
+	private int groundInclination;
+	
+	public UtilitieType(String _name, int gq, int gi){
+		name = _name;
+		index = numberOfUtilities;
+		
+		groundQuality = gq;
+		groundInclination = gi;
+		
+		numberOfUtilities++;
+	}
+	
+	public void printInfo(){
+		System.out.println("\tUrilitie type: " + name);
+		System.out.println("\t\tGround Quality Target: " + groundQuality);
+		System.out.println("\t\tGround Inclination Target: " + groundInclination);
+	}
+	
+	public int getIndex(){
+		return index;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public int getGroundQuality(){
+		return groundQuality;
+	}
+	
+	public int getGroundInclination(){
+		return groundInclination;
+	}
+	
+	public static int getNumberOfUtilities(){
+		return numberOfUtilities;
+	}
+}

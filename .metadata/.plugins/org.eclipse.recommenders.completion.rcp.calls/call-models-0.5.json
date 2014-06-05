@@ -1,0 +1,12 @@
+{
+  "M:\\FEUP\\3ºAno\\2ºSemestre\\IART\\Projects\\Repositorio\\OPLAT\\IART---OPALT\\IART-OPALT\\src": {
+    "location": "M:\\FEUP\\3ºAno\\2ºSemestre\\IART\\Projects\\Repositorio\\OPLAT\\IART---OPALT\\IART-OPALT\\src",
+    "status": "UNRESOLVED",
+    "error": "No class path info available for \u0027M:\\FEUP\\3ºAno\\2ºSemestre\\IART\\Projects\\Repositorio\\OPLAT\\IART---OPALT\\IART-OPALT\\src\u0027. Skipped."
+  },
+  "C:\\Program Files\\Java\\jdk1.7.0_15\\jre\\lib\\rt.jar": {
+    "coordinate": "jre:jre:zip:call:1.0.0",
+    "location": "C:\\Program Files\\Java\\jdk1.7.0_15\\jre\\lib\\rt.jar",
+    "status": "RESOLVED"
+  }
+}

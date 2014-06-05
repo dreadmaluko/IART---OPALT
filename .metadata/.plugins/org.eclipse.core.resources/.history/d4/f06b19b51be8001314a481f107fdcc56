@@ -1,0 +1,289 @@
+package GeographicArea;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Vector;
+
+import Algorithm.Genetic.Chromosome;
+import GeographicArea.Utilities.UtilitieType;
+import GrafoStruct.Grafo;
+import GrafoStruct.Node;
+
+enum CurrentLoadOperation{
+	LOAD_LOTES,
+	LOAD_CONNECTIONS,
+	LOAD_UTILITIES,
+	LOAD_RESTRICTIONS
+}
+
+public class GeographicArea extends Grafo{
+	
+	private Vector<UtilitieType> utilities = new  Vector<UtilitieType>();
+	
+	
+	public GeographicArea() throws IOException{
+		
+		loadFiles();
+		
+		Chromosome.setChromosomeSize(vertexSet.size()*utilities.size());
+		Chromosome.setChromosomeSector(utilities.size());
+		Chromosome.setChromosomeUtilities(utilities);
+		Chromosome.setChromosomeLotes(vertexSet);
+	}
+	
+	private void loadFiles() throws IOException{
+		
+		loadUtilities();
+		loadLotes();
+	}
+	
+	private void generateGround(String loteName, Lote currentLote){
+		
+		if(getLote(loteName) != null)
+			if(currentLote == null){
+				getLote(loteName).setGroundType(GroundType.getRandomGroundType());
+				getLote(loteName).setGroundInclination(GroundInclination.getRandomGroundInclination());
+			}
+			else{
+				if(currentLote.getGroundType() != null && getLote(loteName).getGroundType() == null)
+					getLote(loteName).setGroundType(GroundType.getRandomGroundType(currentLote.getGroundType()));
+				if(currentLote.getGroundInclination() != null && getLote(loteName).getGroundInclination() == null)
+					getLote(loteName).setGroundInclination(GroundInclination.getRandomGroundInclination(currentLote.getGroundInclination()));
+			}		
+	}
+	
+	public void generateGeographicArea(int width, int height){
+		
+		vertexSet = new Vector<Node>();
+		Lote _temp_lote;
+		
+		for(int i = 0; i < width*height; i++){
+			addLote(new Lote("Lote"+i,GroundType.getRandomGroundType(),GroundInclination.getRandomGroundInclination(),100,10,null));
+			//addLote(new Lote("Lote"+i,(GroundType)null,(GroundInclination)null,100,10,null));
+		}
+		
+		for(int i = 0; i < width*height; i++){
+			
+			_temp_lote = getLote("Lote"+i);
+			
+			if(i == 0){
+				//generateGround("Lote"+i, null);
+			}
+			
+			if(i > width){ //tem vizinhos em cima
+				_temp_lote.addEdge(new Distance(getLote("Lote"+(i-width)),10));
+				
+				//generateGround("Lote"+(i-width), _temp_lote);
+					
+			}
+			if(i < width*(height-1)){ //tem vizinhos em baixo
+				_temp_lote.addEdge(new Distance(getLote("Lote"+(i+width)),10));
+				
+				//generateGround("Lote"+(i+width), _temp_lote);
+			}
+			if(i != 0 && i != width*height-1){
+				if(!(i%width == 0) && !(i%width == 4)){ //tem vizinhos à esquerda //tem vizinhos à direita
+					_temp_lote.addEdge(new Distance(getLote("Lote"+(i-1)),10));
+					_temp_lote.addEdge(new Distance(getLote("Lote"+(i+1)),10));
+					
+					//generateGround("Lote"+(i-1), _temp_lote);
+					
+					//generateGround("Lote"+(i+1), _temp_lote);
+				}
+				else
+					if(i%width == 0){
+						_temp_lote.addEdge(new Distance(getLote("Lote"+(i+1)),10));
+						
+						//generateGround("Lote"+(i+1), _temp_lote);
+					}
+					else
+						if(i%width == width-1){
+							_temp_lote.addEdge(new Distance(getLote("Lote"+(i-1)),10));
+							
+							//generateGround("Lote"+(i-1), _temp_lote);
+						}
+			}
+			else
+				if(i == 0){
+					_temp_lote.addEdge(new Distance(getLote("Lote"+(i+1)),10));
+					generateGround("Lote"+(i+1), _temp_lote);
+				}
+				else
+					if(i == width*height-1){
+						_temp_lote.addEdge(new Distance(getLote("Lote"+(i-1)),10));
+						//generateGround("Lote"+(i-1), _temp_lote);
+					}
+			
+				
+		}
+	}
+	
+	private void loadUtilities() throws IOException{
+		CurrentLoadOperation loadOperation = null;
+		//String[] _temp_str_arr;
+		
+		BufferedReader fd = new BufferedReader(new FileReader("utilities.txt"));
+		
+	    try {
+	        String line = fd.readLine();
+
+	        while (line != null) {    
+	        	
+	        	//_temp_str_arr = line.split("//");
+	        	
+	        	if(line.split("//").length > 1 && line.split("//")[1].equals("Utilities"))
+	        		loadOperation = CurrentLoadOperation.LOAD_UTILITIES;
+	        	else if(line.split("//").length > 1 &&  line.split("//")[1].equals("Restrictions"))
+	        		loadOperation = CurrentLoadOperation.LOAD_RESTRICTIONS;
+	        	else{
+	        		
+	        		if(loadOperation != null)
+	        			if(loadOperation == CurrentLoadOperation.LOAD_UTILITIES){
+	        				
+	        				String[] x = line.split("-");
+	        				addUtilitie(x[0],Integer.parseInt(x[1]),Integer.parseInt(x[2]));
+	        			}
+	        			else
+	        				if(loadOperation == CurrentLoadOperation.LOAD_RESTRICTIONS){
+	        				}
+	        	}
+	        		
+	            line = fd.readLine();
+	        }
+	        
+	    } finally {
+	        fd.close();
+	    }
+	}
+	
+	public void addUtilitie(String utilitieName, int groundQuality, int groundInclination, int loteCost){
+		utilities.add(new UtilitieType(utilitieName, groundQuality, groundInclination, loteCost));
+	}
+	
+	public void addLote(Lote lote){
+		
+		for(Node _temp_lote : this.vertexSet)
+			if(_temp_lote.getName() == lote.getName())
+				return;
+		
+		this.vertexSet.add(lote);
+	}
+	
+	private UtilitieType getUtilitie(String utilitieType){
+		
+		for(int i = 0; i < utilities.size(); i++)
+			if(utilities.get(i).getName().equals(utilitieType))
+				return utilities.get(i);
+		return null;
+	}
+	
+	private Lote getLote(String loteName){
+		
+		for(Node lote : this.vertexSet)
+			if(lote.getName().equals(loteName))
+				return (Lote)lote;
+		
+		return null;
+	}
+	
+	public void addConnection(String lote1, String lote2, double distance){
+		
+		Lote _temp_lote1 = getLote(lote1),
+			 _temp_lote2 = getLote(lote2);
+		if(_temp_lote1 != null && _temp_lote2 != null){
+			_temp_lote1.addEdge(new Distance((Lote)_temp_lote2,distance));
+			_temp_lote2.addEdge(new Distance(_temp_lote1,distance));
+		}
+	}
+	
+	public int getNumberOfLotes(){
+		return this.getNumVertex();
+	}
+	
+	public void printInfo(){
+		
+		for(Node lote : this.vertexSet)
+			lote.printInfo();
+		
+		System.out.println("Numero de utilidades: " + UtilitieType.getNumberOfUtilities());
+		
+		for(int i = 0; i < vertexSet.size(); i++){
+			
+			if(((Lote)vertexSet.get(i)).getGroundType() != null)
+				System.out.print(((Lote)vertexSet.get(i)).getGroundType().getName() + " ");
+			else
+				System.out.print("     " + " ");
+			
+			if(i%Math.sqrt((double)vertexSet.size()) == Math.sqrt((double)vertexSet.size())-1)
+				System.out.println();				
+		}
+				
+	}
+	
+	private void loadLotes() throws IOException{
+		
+		CurrentLoadOperation loadOperation = null;
+		String[] _temp_str_arr;
+		
+		BufferedReader fd = new BufferedReader(new FileReader("geographicArea.txt"));
+		
+	    try {
+	        String line = fd.readLine();
+
+	        while (line != null) {    
+	        	
+	        	_temp_str_arr = line.split("//");
+	        	
+	        	if(line.split("//").length > 1 && line.split("//")[1].equals("Lotes"))
+	        		loadOperation = CurrentLoadOperation.LOAD_LOTES;
+	        	else if(line.split("//").length > 1 &&  line.split("//")[1].equals("Connections"))
+	        		loadOperation = CurrentLoadOperation.LOAD_CONNECTIONS;
+	        	else{
+	        		
+	        		if(loadOperation != null)
+	        			if(loadOperation == CurrentLoadOperation.LOAD_LOTES){
+	        				_temp_str_arr = line.split("-");
+	        				addLote(new Lote(_temp_str_arr[0],_temp_str_arr[1],_temp_str_arr[2],Integer.parseInt(_temp_str_arr[3]),Integer.parseInt(_temp_str_arr[4]),getUtilitie(_temp_str_arr[5])));
+	        			}
+	        			else
+	        				if(loadOperation == CurrentLoadOperation.LOAD_CONNECTIONS){
+	        					_temp_str_arr = line.split("-");
+	        					addConnection(_temp_str_arr[0],_temp_str_arr[1],Integer.parseInt(_temp_str_arr[2]));
+	        				}
+	        	}
+	        		
+	            line = fd.readLine();
+	        }
+	        
+	    } finally {
+	        fd.close();
+	    }
+		
+	}
+	
+	
+	public static void main(String[] args) throws IOException{
+		
+		GeographicArea ga = new GeographicArea();	
+		
+		ga.generateGeographicArea(3, 3);
+		
+		ga.printInfo();
+	}
+
+	public void setNewUtilitiesDistribution(char[] charArray) {
+		
+		for(int i = 0; i < charArray.length; i += utilities.size()){
+			
+			for(int j = 0; j < utilities.size(); j++){
+				if(((int)charArray[i+j])-48 == 1){
+					((Lote)vertexSet.get(i/utilities.size())).setUtilitie(utilities.get(j));					
+					break;
+				}
+			}
+		}
+		
+	}
+
+}

@@ -1,5 +1,0 @@
-package GeographicArea.Utilities;
-
-public enum UtilitieType {
-
-}

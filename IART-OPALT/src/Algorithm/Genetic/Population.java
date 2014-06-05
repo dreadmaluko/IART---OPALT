@@ -4,10 +4,8 @@ import java.util.Random;
 
 public class Population {
 
-	/** The size of the tournament. */
 	private static final int TOURNAMENT_SIZE = 3;
 
-	/** Convenience randomizer. */
 	private static final Random rand = new Random(System.currentTimeMillis());
 
 	private float elitism;
@@ -15,19 +13,7 @@ public class Population {
 	private float crossover;
 	private Chromosome[] popArr;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param size The size of the population, where size > 0.
-	 * @param crossoverRatio The crossover ratio for the population during 
-	 * evolution, where 0.0 <= crossoverRatio <= 1.0.
-	 * @param elitismRatio The elitism ratio for the population during
-	 * evolution, where 0.0 <= elitismRatio < 1.0.
-	 * @param mutationRatio The mutation ratio for the population during
-	 * evolution, where 0.0 <= mutationRatio <= 1.0.
-	 * 
-	 * @throws IllegalArgumentException Thrown if an invalid ratio is given.
-	 */
+
 	public Population(int size, float crossoverRatio, float elitismRatio, 
 			float mutationRatio) {
 
@@ -48,9 +34,6 @@ public class Population {
 		Arrays.sort(this.popArr);
 	}
 
-	/**
-	 * Method used to evolve the population.
-	 */
 	public void evolve() {
 		// Create a buffer for the new generation
 		Chromosome[] buffer = new Chromosome[popArr.length];
@@ -105,13 +88,6 @@ public class Population {
 		popArr = buffer;
 	}
 
-	/**
-	 * Method used to retrieve a copy of the current population.  This
-	 * method returns a copy of the population at the time the method was
-	 * called.
-	 * 
-	 * @return A copy of the population.
-	 */
 	public Chromosome[] getPopulation() {
 		Chromosome[] arr = new Chromosome[popArr.length];
 		System.arraycopy(popArr, 0, arr, 0, popArr.length);
@@ -119,39 +95,18 @@ public class Population {
 		return arr;
 	}
 
-	/**
-	 * Method to retrieve the elitism ratio for the population.
-	 * 
-	 * @return The elitism ratio.
-	 */
 	public float getElitism() {
 		return elitism;
 	}
 
-	/**
-	 * Method to retrieve the crossover ratio for the population.
-	 * 
-	 * @return The crossover ratio.
-	 */
 	public float getCrossover() {
 		return crossover;
 	}
 
-	/**
-	 * Method to retrieve the mutation ratio for the population.
-	 * 
-	 * @return The mutation ratio.
-	 */
 	public float getMutation() {
 		return mutation;
 	}
 
-	/**
-	 * A helper method that can be used to select two random parents from
-	 * the population to use in crossover during evolution. 
-	 * 
-	 * @return Two randomly selected <code>Chromsomes</code> for crossover.
-	 */
 	private Chromosome[] selectParents() {
 		Chromosome[] parents = new Chromosome[2];
 

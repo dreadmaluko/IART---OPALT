@@ -1,0 +1,16 @@
+package GeographicArea.Utilities;
+
+enum RestrictionType{
+	NOT_ADJACENT,
+	ADJACENT
+}
+public class Restriction {
+	
+	private UtilitieType u1;
+	private UtilitieType u2;
+	private RestrictionType restrictionType;
+	
+	public Restriction(UtilitieType _u1, UtilitieType _u2, RestrictionType _restrictionType)
+	
+
+}

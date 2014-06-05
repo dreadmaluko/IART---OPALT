@@ -1,0 +1,37 @@
+package GeographicArea;
+
+public enum GroundType{
+	POOR("Poor",1),
+	REASONABLE("Reasonable",2),
+	RICH("Rich",3);
+	
+	private String name;
+	private int value;
+	
+	private GroundType(String str, int v){
+		name = str;
+		value = v;
+	}
+	
+	public static GroundType getType(String str){
+		
+		if(str.equals("Poor"))
+			return GroundType.POOR;
+		else
+			if(str.equals("Reasonable"))
+				return GroundType.REASONABLE;
+			else
+				if(str.equals("Rich"))
+					return GroundType.RICH;
+		
+		return null;
+	}
+	
+	public void printInfo(){
+		System.out.println("\tGround type: " + name);
+	}
+	
+	public int getValue(){
+		return value;
+	}
+}

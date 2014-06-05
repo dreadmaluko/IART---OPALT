@@ -34,15 +34,11 @@ public class GeneticaAlgorithmSolver {
 	}
 	
 	public void solve(){
-		// Get the current run time.  Not very accurate, but useful for 
-		// some simple reporting.
+		
 		long startTime = System.currentTimeMillis();
 		
-		// Create the initial population
 		Population pop = new Population(populationSize, crossoverRatio, 
 			elitismRatio, mutationRatio);
-		// Start evolving the population, stopping when the maximum number of
-		// generations is reached, or when we find a solution.
 		int i = 0;
 		Chromosome best = pop.getPopulation()[0];
 
@@ -52,19 +48,18 @@ public class GeneticaAlgorithmSolver {
 			best = pop.getPopulation()[0];
 		}
 				
-		// Get the end time for the simulation.
+
 		long endTime = System.currentTimeMillis();
 
-		// Print out some information to the console.
+
 		System.out.println("Generation " + i + ": " + best.getGene());
 		System.out.println("Total execution time: " + (endTime - startTime) + "ms");
+		
+		ga.setNewUtilitiesDistribution(best.getGene().toCharArray());
+		
+		ga.printInfo();
 	}
-	/**
-	 * The main method used for execution of the application.
-	 * 
-	 * @param args Command-line arguments (ignored).
-	 * @throws IOException 
-	 */
+
 	public static void main(String[] args) throws IOException {
 
 		new GeneticaAlgorithmSolver().solve();

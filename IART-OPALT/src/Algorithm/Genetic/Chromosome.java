@@ -2,37 +2,28 @@ package Algorithm.Genetic;
 import java.util.Random;
 import java.util.Vector;
 
+import GeographicArea.Lote;
+import GeographicArea.Utilities.Restriction;
 import GeographicArea.Utilities.UtilitieType;
+import GrafoStruct.Node;
 
 public class Chromosome implements Comparable<Chromosome> {
 	private final String gene;
 	private final int fitness;
-
-	/** The target gene, converted to an array for convenience. */
-	//private static final char[] TARGET_GENE = "".toCharArray();
 	
 	private static int chromosomeSize = 0;
 	private static int chromosomeSectorSize = 0;
 	private static Vector<UtilitieType> utilities = new  Vector<UtilitieType>();
+	private static Vector<Node> lotes = new Vector<Node>();
+	private static Vector<Restriction> restrictions = new  Vector<Restriction>();
 
-	/** Convenience randomizer. */
 	private static final Random rand = new Random(System.currentTimeMillis());
 
-	/**
-	 * Default constructor.
-	 *
-	 * @param gene The gene representing this <code>Chromosome</code>.
-	 */
 	public Chromosome(String gene) {
 		this.gene    = gene;
 		this.fitness = calculateFitness(gene);
 	}
 
-	/**
-	 * Method to retrieve the gene for this <code>Chromosome</code>.
-	 *
-	 * @return The gene for this <code>Chromosome</code>.
-	 */
 	public String getGene() {
 		return gene;
 	}
@@ -46,31 +37,22 @@ public class Chromosome implements Comparable<Chromosome> {
 	public static void setChromosomeUtilities(Vector<UtilitieType> u){
 		utilities = u;
 	}
+	public static void setChromosomeRestrictions(Vector<Restriction> r){
+		restrictions = r;
+	}
+	public static void setChromosomeLotes(Vector<Node> n){
+		lotes = n;
+	}
 
-	/**
-	 * Method to retrieve the fitness of this <code>Chromosome</code>.  Note
-	 * that a lower fitness indicates a better <code>Chromosome</code> for the
-	 * solution.
-	 *
-	 * @return The fitness of this <code>Chromosome</code>.
-	 */
 	public int getFitness() {
 		return fitness;
 	}
 
-	/**
-	 * Helper method used to calculate the fitness for a given gene.  The
-	 * fitness is defined as being the sum of the absolute value of the 
-	 * difference between the current gene and the target gene.
-	 * 
-	 * @param gene The gene to calculate the fitness for.
-	 * 
-	 * @return The calculated fitness of the given gene.
-	 */
+
 	private static int calculateFitness(String gene) {
 		
 		///  chromosomeSectorSize
-		int fitness = 0, numberOfUtilities = 0, currentFitness, utilitieIndex;
+		int fitness = 0, numberOfUtilities = 0, utilitieIndex;
 		int[] numberOfR = new int[chromosomeSectorSize];		
 		char[] arr  = gene.toCharArray();
 		
@@ -79,28 +61,34 @@ public class Chromosome implements Comparable<Chromosome> {
 		
 		for (int i = 0; i < arr.length; i+=chromosomeSectorSize) {
 			
-			currentFitness = 0;
 			utilitieIndex = 0;
+			numberOfUtilities = 0;
 					
 			for(int j = 0; j < chromosomeSectorSize; j++){
 				numberOfUtilities += ((int)arr[i+j])-48;
-				currentFitness += ((int)arr[i+j])-48;
 				
 				numberOfR[j] += ((int)arr[i+j])-48;
 				
 				utilitieIndex += (((int)arr[i+j])-48)*j;
 			}
 			
-			if(currentFitness > 1)// mais de um uso nesse lote
-				currentFitness = Math.abs(currentFitness-1)*1000;
-			if(currentFitness < 1)// menos de um uso
-				currentFitness = Math.abs(currentFitness-1)*10000;
+			if(numberOfUtilities == 1){//verifica restricoes de utilidade
+				fitness += getGroundTypeFitness(utilities.get(utilitieIndex), lotes.get( i/chromosomeSectorSize));
+				fitness += getGroundInclinationFitness(utilities.get(utilitieIndex), lotes.get( i/chromosomeSectorSize));
+				fitness += getLoteCostFitness(utilities.get(utilitieIndex), lotes.get( i/chromosomeSectorSize));
+			}
 			
+			if(numberOfUtilities != 1)// mais de um uso nesse lote
+				numberOfUtilities = Math.abs(numberOfUtilities-1)*1000;
+			else
+				numberOfUtilities = 0;			
 			
-			
-			fitness += currentFitness;
+			fitness += numberOfUtilities;
 		}
-
+		
+		/*if(restrictionExist(utilities.get((utilitieIndex))){
+			
+		}*/
 
 		for(int i = 0; i < numberOfR.length; i++)
 			if(numberOfR[i] > 1)
@@ -113,34 +101,64 @@ public class Chromosome implements Comparable<Chromosome> {
 
 		return fitness;
 	}
+	
+	/*private boolean restrictionExist(UtilitieType utilitieType) {
+		
+		for(int i = 0; i < restrictions.size(); i++){
+			if(restrictions.get(i).getFirstUtilitie().getName().equals(utilitieType.getName()))
+				
+		}
+		
+	}*/
 
-	/**
-	 * Method to generate a new <code>Chromosome</code> that is a random
-	 * mutation of this <code>Chromosome</code>.  This method randomly
-	 * selects one character in the <code>Chromosome</code>s gene, then
-	 * replaces it with another random (but valid) character.  Note that
-	 * this method returns a new <code>Chromosome</code>, it does not
-	 * modify the existing <code>Chromosome</code>.
-	 * 
-	 * @return A mutated version of this <code>Chromosome</code>.
-	 */
-	public Chromosome mutate() {
-		char[] arr  = gene.toCharArray();
-		/*int idx     = rand.nextInt(arr.length);
-		int delta   = (rand.nextInt() % 2) + 48;
-		arr[idx]    = (char) ((arr[idx] + delta) % 122);*/
+	private static int getGroundTypeFitness(UtilitieType u, Node n ){
 
-		return new Chromosome(String.valueOf(arr));
+		if(((Lote)n).getGroundType().getValue() < u.getGroundQuality())
+			return 100*Math.abs(((Lote)n).getGroundType().getValue() - u.getGroundQuality());
+		else
+			return 0;
+	}
+	private static int getGroundInclinationFitness(UtilitieType u, Node n ){
+		
+		if(((Lote)n).getGroundInclination().getValue() < u.getGroundInclination())
+			return 100*Math.abs(((Lote)n).getGroundInclination().getValue() - u.getGroundInclination());
+		else
+			return 0;
+	}
+	
+	private static int getLoteCostFitness(UtilitieType u, Node n){
+		
+		if(u.getLoteCost() != 0 && ((Lote)n).getCost() > u.getLoteCost())
+			return 100*Math.abs(((Lote)n).getCost() - u.getLoteCost());
+		else
+			return 0;
 	}
 
-	/**
-	 * Method used to mate this <code>Chromosome</code> with another.  The
-	 * resulting child <code>Chromosome</code>s are returned.
-	 * 
-	 * @param mate The <code>Chromosome</code> to mate with.
-	 * 
-	 * @return The resulting <code>Chromosome</code> children.
-	 */
+	public Chromosome mutate() {
+		char[] arr  = gene.toCharArray();
+		char[] newArr = new char[gene.length()];
+		int idx     = rand.nextInt(utilities.size());
+		
+		System.arraycopy(arr, 0, newArr, 0, idx*utilities.size());
+		System.arraycopy(getRandomLote(utilities.size()), 0, newArr, idx*utilities.size(), utilities.size());
+		System.arraycopy(arr, idx*utilities.size()+utilities.size(), newArr, idx*utilities.size()+utilities.size(), gene.toCharArray().length-idx*utilities.size()-utilities.size());
+
+		return new Chromosome(String.valueOf(newArr));
+	}
+	
+	private char[] getRandomLote(int nUtilities){
+		int idx = rand.nextInt(nUtilities);
+		char[] returnValue = new char[nUtilities];
+		
+		for(int i = 0; i < nUtilities; i++)
+			if(i == idx)
+				returnValue[i]='1';
+			else
+				returnValue[i]='0';
+		
+		return returnValue;
+	}
+
 	public Chromosome[] mate(Chromosome mate) {
 		// Convert the genes to arrays to make thing easier.
 		char[] arr1  = gene.toCharArray();
@@ -165,11 +183,6 @@ public class Chromosome implements Comparable<Chromosome> {
 				new Chromosome(String.valueOf(child2))}; 
 	}
 
-	/**
-	 * A convenience method to generate a randome <code>Chromosome</code>.
-	 * 
-	 * @return A randomly generated <code>Chromosome</code>.
-	 */
 	static Chromosome generateRandom() {
 		char[] arr = new char[chromosomeSize];
 		for (int i = 0; i < arr.length; i++) {
@@ -179,12 +192,6 @@ public class Chromosome implements Comparable<Chromosome> {
 		return new Chromosome(String.valueOf(arr));
 	}
 
-	/**
-	 * Method to allow for comparing <code>Chromosome</code> objects with
-	 * one another based on fitness.  <code>Chromosome</code> ordering is 
-	 * based on the natural ordering of the fitnesses of the
-	 * <code>Chromosome</code>s.  
-	 */
 	@Override
 	public int compareTo(Chromosome c) {
 		if (fitness < c.fitness) {
@@ -196,9 +203,6 @@ public class Chromosome implements Comparable<Chromosome> {
 		return 0;
 	}
 
-	/**
-	 * @see Object#equals(Object)
-	 */
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Chromosome)) {
@@ -209,9 +213,6 @@ public class Chromosome implements Comparable<Chromosome> {
 		return (gene.equals(c.gene) && fitness == c.fitness);
 	}
 
-	/**
-	 * @see Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {		
 		return new StringBuilder().append(gene).append(fitness)
